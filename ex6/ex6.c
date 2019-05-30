@@ -21,6 +21,24 @@ and `clock_gettime()` should work just fine.
 int main()
 {
     // Your code here
+    struct timespec start, end;
+    uint64_t total = 0;
+    uint64_t diff; 
+
+    for (int i = 0; i < number_iter; i++) {
+        clock_gettime(CLOCK_MONOTONIC, &start);
+        write(fileno(stdout), NULL, 0);
+        clock_gettime(CLOCK_MONOTONIC, &end);
+
+        // get time it took for the write call in nanoseconds (straight from rutgers time manual)
+        diff = BILLION * (end.tv_sec - start.tv_sec) + end.tv_nsec - start.tv_nsec;
+        total += diff;
+    }
+
+    uint64_t average = total / number_iter;
+    printf("Average number of nanoseconds for this system call: %llu\n", average);
     
     return 0;
 }
+
+// average came out to 1344 nanoseconds per system call
