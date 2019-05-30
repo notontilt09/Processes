@@ -10,6 +10,18 @@
 int main(void)
 {
     // Your code here
+    int status;
+    int rc = fork();
+
+    if (rc < 0) {
+        fprintf(stderr, "fork failed\n");
+        exit(1);
+    } else if (rc == 0) {
+        printf("hello\n");
+    } else {
+        int wc = waitpid(rc, &status, 0);
+        printf("goodbye\n");
+    }
 
     return 0;
 }
